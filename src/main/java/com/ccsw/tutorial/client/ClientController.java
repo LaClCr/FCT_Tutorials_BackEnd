@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -55,14 +57,20 @@ public class ClientController {
      *
      * @param id  PK de la entidad
      * @param dto datos de la entidad
+     * @throws Exception
      */
 
     @Operation(summary = "Save or Update", description = "Method that saves or updates a Client")
     @RequestMapping(path = { "", "/{id}" }, method = RequestMethod.PUT)
 
-    public void save(@PathVariable(name = "id", required = false) Long id, @RequestBody ClientDto dto) {
+    public ResponseEntity<?> save(@PathVariable(name = "id", required = false) Long id, @RequestBody ClientDto dto) {
 
-        this.clientService.save(id, dto);
+        try {
+            clientService.save(id, dto);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Already exists");
+        }
     }
 
     /**

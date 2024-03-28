@@ -41,21 +41,27 @@ public class ClientServiceImpl implements ClientService {
 
     /**
      * {@inheritDoc}
+     * 
      */
     @Override
-    public void save(Long id, ClientDto dto) {
+    public void save(Long id, ClientDto dto) throws Exception {
 
-        Client client;
-
-        if (id == null) {
-            client = new Client();
+        if (existsByName(dto.getName())) {
+            throw new Exception("Already exists");
         } else {
-            client = this.get(id);
+            Client client;
+
+            if (id == null) {
+                client = new Client();
+            } else {
+                client = this.get(id);
+            }
+
+            client.setName(dto.getName());
+
+            this.clientRepository.save(client);
         }
 
-        client.setName(dto.getName());
-
-        this.clientRepository.save(client);
     }
 
     /**
@@ -69,5 +75,23 @@ public class ClientServiceImpl implements ClientService {
         }
 
         this.clientRepository.deleteById(id);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean existsByName(String name) {
+
+        List<Client> existingClients = (List<Client>) clientRepository.findAll();
+        boolean alreadyExists = false;
+
+        for (Client existingClient : existingClients) {
+            if (existingClient.getName().equals(name)) {
+                alreadyExists = true;
+            }
+        }
+
+        return alreadyExists;
     }
 }

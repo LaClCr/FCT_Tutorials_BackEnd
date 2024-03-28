@@ -49,7 +49,7 @@ public class ClientTest {
     public static final String CLIENT_NAME = "Client1";
 
     @Test
-    public void saveNotExistsClientIdShouldInsert() {
+    public void saveNotExistsClientIdShouldInsert() throws Exception {
 
         ClientDto clientDto = new ClientDto();
         clientDto.setName(CLIENT_NAME);
@@ -66,7 +66,7 @@ public class ClientTest {
     public static final Long EXISTS_CLIENT_ID = 1L;
 
     @Test
-    public void saveExistsClientIdShouldUpdate() {
+    public void saveExistsClientIdShouldUpdate() throws Exception {
 
         ClientDto clientDto = new ClientDto();
         clientDto.setName(CLIENT_NAME);
