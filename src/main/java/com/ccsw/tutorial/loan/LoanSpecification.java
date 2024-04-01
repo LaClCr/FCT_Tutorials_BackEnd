@@ -13,6 +13,10 @@ import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
+/**
+ * @author LaClCr
+ *
+ */
 public class LoanSpecification implements Specification<Loan> {
 
     private static final long serialVersionUID = 1L;

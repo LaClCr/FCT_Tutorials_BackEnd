@@ -1,7 +1,7 @@
 package com.ccsw.tutorial.loan;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -10,6 +10,10 @@ import org.springframework.stereotype.Repository;
 
 import com.ccsw.tutorial.loan.model.Loan;
 
+/**
+ * @author LaClCr
+ *
+ */
 @Repository
 public interface LoanRepository extends CrudRepository<Loan, Long>, JpaSpecificationExecutor<Loan> {
 
@@ -21,6 +25,6 @@ public interface LoanRepository extends CrudRepository<Loan, Long>, JpaSpecifica
      * @return página de préstamos que coinciden con el filtrado
      */
 
-    @EntityGraph(attributePaths = { "client", "game", "start_date", "end_date" })
-    List<Loan> findAll(Specification<Loan> spec);
+    @EntityGraph(attributePaths = { "client", "game" })
+    Page<Loan> findAll(Specification<Loan> spec, Pageable pageable);
 }

@@ -1,14 +1,16 @@
 package com.ccsw.tutorial.loan;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,9 +23,12 @@ import com.ccsw.tutorial.loan.model.LoanDto;
 import com.ccsw.tutorial.loan.model.LoanSearchDto;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+/**
+ * @author LaClCr
+ *
+ */
 @Tag(name = "Loan", description = "API of Loan")
 @RequestMapping(value = "/loan")
 @RestController
@@ -79,39 +84,20 @@ public class LoanController {
     }
 
     /**
-     * Método para recuperar una lista de {@link Loan}
+     * Método que devuelve una lista paginada de préstamos filtrada por criterios.
      *
-     * @param clientId   ID del cliente
-     * @param idCategory ID de la categoría del juego
-     * @param date       Fecha del préstamo
-     * @return {@link List} de {@link LoanDto}
+     * @param dto El DTO que contiene los criterios de búsqueda.
+     * @return Una página de resultados de préstamos.
      */
-//    @Operation(summary = "Find", description = "Method that return a filtered list of Loans")
-//    @RequestMapping(path = "", method = RequestMethod.GET)
-//    public List<LoanDto> find(@RequestParam(value = "title", required = false) String title,
-//            @RequestParam(value = "idClient", required = false) Long idClient,
-//            @RequestParam(value = "start_date", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start_date,
-//            @RequestParam(value = "end_date", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end_date) {
-//
-//        System.out.println("CONTROLLER");
-//        System.out.println(start_date);
-//        System.out.println(title);
-//        List<Loan> loans = loanService.find(title, idClient, start_date, end_date);
-//        System.out.println("CONTROLLER END");
-//
-//        return loans.stream().map(e -> mapper.map(e, LoanDto.class)).collect(Collectors.toList());
-//    }
-
     @Operation(summary = "Find", description = "Method that return a filtered list of Loans")
     @RequestMapping(path = "", method = RequestMethod.POST)
-    public List<LoanDto> find(@RequestBody LoanSearchDto dto) {
+    public Page<LoanDto> find(@RequestBody LoanSearchDto dto) {
 
-        System.out.println(dto);
-        System.out.println(dto.getTitle());
-        System.out.println(dto.getIdClient());
-        List<Loan> loans = loanService.find(dto);
+        Page<Loan> loans = loanService.find(dto);
 
-        return loans.stream().map(e -> mapper.map(e, LoanDto.class)).collect(Collectors.toList());
+        return new PageImpl<>(
+                loans.getContent().stream().map(e -> mapper.map(e, LoanDto.class)).collect(Collectors.toList()),
+                loans.getPageable(), loans.getTotalElements());
     }
 
 }

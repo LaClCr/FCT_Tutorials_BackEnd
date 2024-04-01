@@ -2,7 +2,10 @@ package com.ccsw.tutorial.loan.model;
 
 import java.time.LocalDate;
 
+import com.ccsw.tutorial.client.model.ClientDto;
 import com.ccsw.tutorial.common.pagination.PageableRequest;
+import com.ccsw.tutorial.game.model.GameDto;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
  * @author LaClCr
@@ -12,13 +15,12 @@ public class LoanSearchDto {
 
     private PageableRequest pageable;
 
-    private String title;
+    private GameDto game;
 
-    private Long idClient;
+    private ClientDto client;
 
-    private LocalDate start_date;
-
-    private LocalDate end_date;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate date;
 
     public PageableRequest getPageable() {
         return pageable;
@@ -28,36 +30,28 @@ public class LoanSearchDto {
         this.pageable = pageable;
     }
 
-    public String getTitle() {
-        return title;
+    public GameDto getGame() {
+        return game;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setGame(GameDto game) {
+        this.game = game;
     }
 
-    public Long getIdClient() {
-        return idClient;
+    public ClientDto getClient() {
+        return client;
     }
 
-    public void setIdClient(Long idClient) {
-        this.idClient = idClient;
+    public void setClient(ClientDto client) {
+        this.client = client;
     }
 
-    public LocalDate getStart_date() {
-        return start_date;
+    public LocalDate getDate() {
+        return date;
     }
 
-    public void setStart_date(LocalDate start_date) {
-        this.start_date = start_date;
-    }
-
-    public LocalDate getEnd_date() {
-        return end_date;
-    }
-
-    public void setEnd_date(LocalDate end_date) {
-        this.end_date = end_date;
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
 }

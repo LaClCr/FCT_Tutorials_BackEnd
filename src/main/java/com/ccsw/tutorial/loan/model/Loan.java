@@ -37,12 +37,12 @@ public class Loan {
     private Client client;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @Column(name = "start_date", nullable = false)
-    private LocalDate start_date;
+    @Column(name = "init_date", nullable = false)
+    private LocalDate initDate;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "end_date", nullable = false)
-    private LocalDate end_date;
+    private LocalDate endDate;
 
     /**
      * @return id
@@ -93,34 +93,34 @@ public class Loan {
     }
 
     /**
-     * @return start_date
+     * @return initDate
      */
-    public LocalDate getStartDate() {
+    public LocalDate getInitDate() {
 
-        return this.start_date;
+        return this.initDate;
     }
 
     /**
-     * @param start_date new value of {@link #getStartDate}.
+     * @param initDate new value of {@link #getInitDate}.
      */
-    public void setStartDate(LocalDate start_date) {
+    public void setInitDate(LocalDate initDate) {
 
-        this.start_date = start_date;
+        this.initDate = initDate;
     }
 
     /**
-     * @return end_date
+     * @return endDate
      */
     public LocalDate getEndDate() {
 
-        return this.end_date;
+        return this.endDate;
     }
 
     /**
-     * @param end_date new value of {@link #getEndDate}.
+     * @param endDate new value of {@link #getEndDate}.
      */
-    public void setEndDate(LocalDate end_date) {
+    public void setEndDate(LocalDate endDate) {
 
-        this.end_date = end_date;
+        this.endDate = endDate;
     }
 }

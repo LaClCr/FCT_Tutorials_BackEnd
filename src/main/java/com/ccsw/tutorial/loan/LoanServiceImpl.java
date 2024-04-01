@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,10 @@ import com.ccsw.tutorial.loan.model.LoanSearchDto;
 
 import jakarta.transaction.Transactional;
 
+/**
+ * @author LaClCr
+ *
+ */
 @Service
 @Transactional
 public class LoanServiceImpl implements LoanService {
@@ -52,44 +57,26 @@ public class LoanServiceImpl implements LoanService {
      * @return Una página de préstamos que coinciden con los criterios de búsqueda.
      */
     @Override
-//    public List<Loan> find(String title, Long idClient, LocalDate start_date, LocalDate end_date) {
-//
-//        Specification<Loan> spec = Specification.where(null);
-//
-//        if (title != null) {
-//            spec = spec.and(new LoanSpecification(new SearchCriteria("game.title", ":", title)));
-//        }
-//        if (idClient != null) {
-//            spec = spec.and(new LoanSpecification(new SearchCriteria("client.id", ":", idClient)));
-//        }
-//        if (start_date != null) {
-//            spec = spec.and(new LoanSpecification(new SearchCriteria("start_date", ">=", start_date)));
-//        }
-//        if (end_date != null) {
-//            spec = spec.and(new LoanSpecification(new SearchCriteria("end_date", "<=", end_date)));
-//        }
-//
-//        return this.loanRepository.findAll(spec);
-//    }
-
-    public List<Loan> find(LoanSearchDto dto) {
+    public Page<Loan> find(LoanSearchDto dto) {
 
         Specification<Loan> spec = Specification.where(null);
 
-        if (dto.getTitle() != null) {
-            spec = spec.and(new LoanSpecification(new SearchCriteria("game.title", ":", dto.getTitle())));
+        if (dto.getGame() != null && dto.getGame().getId() != null) {
+            System.out.println(dto.getGame().getId());
+            spec = spec.and(new LoanSpecification(new SearchCriteria("game.id", ":", dto.getGame().getId())));
         }
-        if (dto.getIdClient() != null) {
-            spec = spec.and(new LoanSpecification(new SearchCriteria("client.id", ":", dto.getIdClient())));
+        if (dto.getClient() != null && dto.getClient().getId() != null) {
+            System.out.println(dto.getClient().getId());
+            spec = spec.and(new LoanSpecification(new SearchCriteria("client.id", ":", dto.getClient().getId())));
         }
-        if (dto.getStart_date() != null) {
-            spec = spec.and(new LoanSpecification(new SearchCriteria("start_date", ">=", dto.getStart_date())));
-        }
-        if (dto.getEnd_date() != null) {
-            spec = spec.and(new LoanSpecification(new SearchCriteria("end_date", "<=", dto.getEnd_date())));
+        if (dto.getDate() != null) {
+            System.out.println(dto.getDate());
+            spec = spec.and(new LoanSpecification(new SearchCriteria("initDate", ">=", dto.getDate())));
+            spec = spec.and(new LoanSpecification(new SearchCriteria("endDate", "<=", dto.getDate())));
         }
 
-        return this.loanRepository.findAll(spec);
+        return this.loanRepository.findAll(spec, dto.getPageable().getPageable());
+
     }
 
     /**
@@ -164,7 +151,7 @@ public class LoanServiceImpl implements LoanService {
     public boolean isLoanDurationValid(LoanDto dto) {
 
         boolean ok = true;
-        if (ChronoUnit.DAYS.between(dto.getStartDate(), dto.getEndDate()) > 14) {
+        if (ChronoUnit.DAYS.between(dto.getInitDate(), dto.getEndDate()) > 14) {
             ok = false;
         }
         return ok;
@@ -181,11 +168,11 @@ public class LoanServiceImpl implements LoanService {
      *         especificado, false de lo contrario.
      */
     public boolean isGameOnLoan(List<Loan> loans, LoanDto dto, int index) {
-        LocalDate loanStartDate = loans.get(index).getStartDate();
+        LocalDate loanStartDate = loans.get(index).getInitDate();
         LocalDate loanEndDate = loans.get(index).getEndDate();
 
-        return dto.getStartDate().isEqual(loanStartDate) || dto.getEndDate().isEqual(loanEndDate)
-                || (dto.getStartDate().isBefore(loanEndDate) && dto.getEndDate().isAfter(loanStartDate));
+        return dto.getInitDate().isEqual(loanStartDate) || dto.getEndDate().isEqual(loanEndDate)
+                || (dto.getInitDate().isBefore(loanEndDate) && dto.getEndDate().isAfter(loanStartDate));
     }
 
     /**
@@ -200,11 +187,11 @@ public class LoanServiceImpl implements LoanService {
      *         false de lo contrario.
      */
     public boolean isClientWithActiveLoan(List<Loan> loans, LoanDto dto, int index) {
-        LocalDate loanStartDate = loans.get(index).getStartDate();
+        LocalDate loanStartDate = loans.get(index).getInitDate();
         LocalDate loanEndDate = loans.get(index).getEndDate();
 
-        return dto.getStartDate().isEqual(loanStartDate) || dto.getEndDate().isEqual(loanEndDate)
-                || (dto.getStartDate().isBefore(loanEndDate) && dto.getEndDate().isAfter(loanStartDate));
+        return dto.getInitDate().isEqual(loanStartDate) || dto.getEndDate().isEqual(loanEndDate)
+                || (dto.getInitDate().isBefore(loanEndDate) && dto.getEndDate().isAfter(loanStartDate));
     }
 
 }
