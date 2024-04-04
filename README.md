@@ -19,7 +19,7 @@ El repositorio está organizado de la siguiente manera:
 
 ## Repositorio del Cliente
 
-La parte del cliente de la aplicación se encuentra en otro repositorio separado. Para obtener más información sobre el cliente y su implementación con Angular, consulte el repositorio [aquí](enlace-al-repositorio-del-cliente).
+La parte del cliente de la aplicación se encuentra en otro repositorio separado. Para obtener más información sobre el cliente y su implementación con Angular, consulte el repositorio [aquí](https://github.com/LaClCr/FCT_Tutorials_FrontEnd.git).
 
 
 
