@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ccsw.tutorial.loan.exceptions.ClientWithActiveLoanException;
 import com.ccsw.tutorial.loan.exceptions.GameAlreadyOnLoanException;
+import com.ccsw.tutorial.loan.exceptions.InitDatePosteriorToEndDate;
 import com.ccsw.tutorial.loan.exceptions.LoanDurationExceededException;
 import com.ccsw.tutorial.loan.model.Loan;
 import com.ccsw.tutorial.loan.model.LoanDto;
@@ -58,13 +59,17 @@ public class LoanController {
             return ResponseEntity.ok().build();
 
         } catch (LoanDurationExceededException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("La duración no puede exceder los 14 días.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("La duración no puede exceder los 14 días.");
 
         } catch (GameAlreadyOnLoanException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Este juego ya está prestado.");
 
         } catch (ClientWithActiveLoanException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Este cliente ya tiene un préstamo en curso.");
+
+        } catch (InitDatePosteriorToEndDate e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("La fecha de inicio no puede ser posterior a la fecha de fin.");
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("No se pudo guardar el préstamo.");
@@ -93,6 +98,7 @@ public class LoanController {
     @RequestMapping(path = "", method = RequestMethod.POST)
     public Page<LoanDto> find(@RequestBody LoanSearchDto dto) {
 
+        dto.formatDate();
         Page<Loan> loans = loanService.find(dto);
 
         return new PageImpl<>(

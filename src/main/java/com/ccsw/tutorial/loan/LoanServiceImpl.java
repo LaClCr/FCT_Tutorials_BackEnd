@@ -15,6 +15,7 @@ import com.ccsw.tutorial.common.criteria.SearchCriteria;
 import com.ccsw.tutorial.game.GameService;
 import com.ccsw.tutorial.loan.exceptions.ClientWithActiveLoanException;
 import com.ccsw.tutorial.loan.exceptions.GameAlreadyOnLoanException;
+import com.ccsw.tutorial.loan.exceptions.InitDatePosteriorToEndDate;
 import com.ccsw.tutorial.loan.exceptions.LoanDurationExceededException;
 import com.ccsw.tutorial.loan.model.Loan;
 import com.ccsw.tutorial.loan.model.LoanDto;
@@ -92,6 +93,10 @@ public class LoanServiceImpl implements LoanService {
 
         Loan loan = new Loan();
         List<Loan> loans = (List<Loan>) this.loanRepository.findAll();
+
+        if (dto.getInitDate().isAfter(dto.getEndDate())) {
+            throw new InitDatePosteriorToEndDate("La fecha de inicio no puede ser posterior a la fecha de fin");
+        }
 
         if (!isLoanDurationValid(dto)) {
             throw new LoanDurationExceededException("Loan must be 14 days max");
